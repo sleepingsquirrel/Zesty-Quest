@@ -39,7 +39,8 @@ float cam_x = 0.0;
 float cam_y = 0.0;
 float cam_speed = 1000.0;
 
-
+int frame = 0;
+char *scene = "thejouney";
 
 bool isFullScreen = true;
 
@@ -107,6 +108,9 @@ SDL_Texture* change_texture(uint8_t* data){
     return texture;
 }
 
+void cutscene(){
+    SDL_Surface * IMG_Load(scene);
+}
 
 
 int main(int argc, char* argv[]){
