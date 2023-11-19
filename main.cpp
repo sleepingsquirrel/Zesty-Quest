@@ -42,13 +42,13 @@ float cam_x = 0.0;
 float cam_y = 0.0;
 float cam_speed = 1000.0;
 
-bool in_cutscene = true;
+bool in_cutscene = false;
 int frame = 0;
 float frame_time = 1.0;
 SDL_Surface *current_frame;
 string scene = "cutscenes/out/GOOMZONE/";
 string scene1 = "cutscenes/out/thejouney/";
-string scene2 = "cutscenes/out/GOOMZONE/";
+string scene2 = "cutscenes/out/uap/";
 string scene3 = "cutscenes/out/TELEVISION/";
 
 
@@ -66,6 +66,12 @@ colour pixelmap[MAX_HEIGHT][MAX_WIDTH];
 
 void end_scene();
 
+struct player{
+    float x;
+    float y;
+    float r;
+    float speed;
+} p = {100,100,100,3};
 void debug(string message){
     if (DEBUG){
         cout << message << "\n";
@@ -81,9 +87,31 @@ void init(){
 void draw() {
     for(int x = 0; x < dm.w; x++){
         for(int y = 0; y < dm.h; y++){
-            pixelmap[y][x].r = rand() % 255;
+            pixelmap[y][x].r = 0;
         }
     }
+    for (int x = -p.r; x < p.r; x++){
+        for (int y = -p.r; y < p.r; y++){
+            int pxx = y + p.y;
+            int pxy = x + p.x;
+            if (pxx < 0){
+                continue;
+            }
+            if (pxy < 0)
+            {
+                continue;
+            }
+            if (pxx > dm.w){
+                continue;
+            }
+            if (pxy >= dm.h)
+            {
+                continue;
+            }
+            pixelmap[pxx][pxy].r = 255;
+        }
+    }
+
 }
 
 
@@ -95,10 +123,10 @@ void physics(){
 
 
 void update(){
-
+    debug("drawing");
     draw();
 
-
+    debug("physics");
     physics();
 
 }
@@ -224,7 +252,7 @@ int main(int argc, char* argv[]){
     bool gameIsRunning = true;
     int start;
     int frames = 0;
-    set_scene(scene);
+    //set_scene(scene);
     start = SDL_GetTicks();
     // Main application loop
     while(gameIsRunning){
@@ -282,17 +310,21 @@ int main(int argc, char* argv[]){
             }
         }
         if (keys[SDLK_w]){
-            cam_y += (cam_speed)/fps_current;
+            //cam_y += (cam_speed)/fps_current;
+            p.y -= p.speed;
 
         }
         if (keys[SDLK_s]){
-            cam_y -= (cam_speed)/fps_current;
+            //cam_y -= (cam_speed)/fps_current;
+            p.y += p.speed;
         }
         if (keys[SDLK_a]){
-            cam_x += (cam_speed)/fps_current;
+            //cam_x += (cam_speed)/fps_current;
+            p.x -= p.speed;
         }
         if (keys[SDLK_d]){
-            cam_x -= (cam_speed)/fps_current;
+            //cam_x -= (cam_speed)/fps_current;
+            p.x += p.speed;
         }
         if (keys[SDLK_f])
         {
